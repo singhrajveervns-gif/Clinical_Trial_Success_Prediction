@@ -264,3 +264,5 @@ clinical-trial-success-prediction/
 
 **Rajveer Singh**
 
+GitHub: [@singhrajveervns-gif](https://github.com/singhrajveervns-gif)
+
