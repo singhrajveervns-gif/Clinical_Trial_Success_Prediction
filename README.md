@@ -235,7 +235,7 @@ pip install -r requirements.txt
    Checklist in the notebook's Phase 8 for details)
 
 ## Repository Structure
-
+```
 clinical-trial-success-prediction/
 ├── data/
 │   └── clin_trials.csv          # not committed to Git (see .gitignore)
@@ -248,7 +248,7 @@ clinical-trial-success-prediction/
 ├── README.md
 ├── requirements.txt
 └── .gitignore
-
+```
 ## Future Improvements
 
 - Modularize notebook logic into a reusable `src/` package
