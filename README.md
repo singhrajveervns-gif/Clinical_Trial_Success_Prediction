@@ -4,13 +4,17 @@ A healthcare / pharmaceutical analytics machine learning project predicting whet
 clinical trial is likely to reach operational completion, using only information
 available at or near the trial's design stage.
 
+**🔗 Live app:** [clinicaltrialsuccessprediction-yrvyzr9jt7dsaefrhmubja.streamlit.app](https://clinicaltrialsuccessprediction-yrvyzr9jt7dsaefrhmubja.streamlit.app)
+
 ## Project Overview
 
 This project builds an end-to-end classical ML pipeline — from raw ClinicalTrials.gov
 data through cleaning, feature engineering, model tuning, explainability, and business
 recommendations — to support portfolio-risk decisions in pharmaceutical R&D and CRO
 operations. It is designed to run entirely on Google Colab Free, using only classical
-ML (no deep learning, no heavy NLP) to keep it accessible and fast to reproduce.
+ML (no deep learning, no heavy NLP) to keep it accessible and fast to reproduce. A
+Streamlit app puts the final model in front of a live, interactive form so a
+non-technical stakeholder can score a hypothetical trial without touching the notebook.
 
 ## Project Highlights
 
@@ -26,6 +30,8 @@ ML (no deep learning, no heavy NLP) to keep it accessible and fast to reproduce.
   earlier EDA hypotheses rather than taken at face value
 - A validated three-tier business risk workflow (High / Medium / Low) for portfolio
   review prioritization
+- A live Streamlit app that scores a single, user-described trial and explains the
+  prediction with a local SHAP breakdown — not just static notebook screenshots
 - Runs entirely on Google Colab Free — CPU only, no paid GPU required
 
 ## Project Pipeline
@@ -92,6 +98,8 @@ before any cleaning or modeling decisions were made.
    language and checked against domain hypotheses
 8. **Business Insights** — a validated risk-tiering workflow and stakeholder-specific
    recommendations
+9. **Deployment** — an interactive Streamlit app wrapping the saved pipeline for
+   live, single-trial scoring
 
 ### Feature Engineering
 
@@ -145,7 +153,8 @@ SHAP (`TreeExplainer`) was used to identify the design-time features most associ
 with predicted success/failure, with global summary/dependence plots and three local
 explanations (high-confidence success, high-confidence failure risk, and a borderline
 case). Findings were explicitly checked against earlier EDA hypotheses, with any
-contradictions documented rather than smoothed over.
+contradictions documented rather than smoothed over. The same `TreeExplainer` logic
+powers the live per-trial explanation in the Streamlit app below.
 
 <p align="center">
   <img src="screenshots/09_shap_summary.png" width="800" loading="lazy">
@@ -208,6 +217,38 @@ narrative above:
 </p>
 <p align="center"><em>Completion rate by trial complexity bucket.</em></p>
 
+## Live Streamlit App
+
+The saved pipeline (`models/final_model.pkl` — preprocessing + tuned classifier
+bundled together) is wrapped in a single-page Streamlit app so anyone can score a
+hypothetical trial without opening the notebook.
+
+**🔗 [Try it live](https://clinicaltrialsuccessprediction-yrvyzr9jt7dsaefrhmubja.streamlit.app)**
+
+<p align="center">
+  <img src="screenshots/21_streamlit_app.png" width="850" loading="lazy">
+</p>
+<p align="center"><em>Interactive predictor: sidebar inputs on the left, predicted success probability, risk tier, and a local SHAP explanation on the right.</em></p>
+
+**What it does:**
+
+- Takes trial details as input — title/description text, conditions and interventions,
+  eligibility (age groups), sponsor organization class, responsible party, primary
+  purpose, study type, phase, and planned start year
+- Derives the same 17 engineered features the pipeline was trained on (word counts,
+  multi-condition/intervention flags, complexity index, sponsor grouping) so the input
+  row matches training-time preprocessing exactly
+- Returns the predicted success probability, the same High/Medium/Low risk tier used
+  in Phase 7.3 (cut at 40% / 70%), and a local SHAP bar chart showing which inputs
+  pushed the prediction toward success (green) or failure (red) for that specific trial
+- Displays a disclaimer banner consistent with the notebook's Assumptions &
+  Limitations section — this is a portfolio demo reflecting statistical association in
+  historical registry data, not a clinical, efficacy, or investment recommendation
+
+**Note on this screenshot:** Streamlit apps are interactive, so a single static image
+can only capture one input configuration and one moment in the sidebar's scroll
+position — click the live link above to actually try different trial inputs.
+
 ## Technologies Used
 
 - Python
@@ -218,6 +259,7 @@ narrative above:
 - SHAP
 - Matplotlib
 - Seaborn
+- Streamlit
 - Google Colab (CPU only, no paid GPU required)
 
 ## Installation
@@ -228,11 +270,24 @@ pip install -r requirements.txt
 
 ## How to Run
 
+**Notebook (model training):**
+
 1. Open `notebooks/Clinical_Trial_Success_Prediction.ipynb` in Google Colab
 2. Upload the dataset to Google Drive at:
    `/content/drive/MyDrive/Clinical_Trial_Success_Prediction/Data/clin_trials.csv`
 3. Run all cells top to bottom — no manual edits required (see the Reproducibility
-   Checklist in the notebook's Phase 8 for details)
+   Checklist in the notebook's Phase 8 for details). Phase 8.5 saves the fitted
+   pipeline to `models/final_model.pkl`.
+
+**Streamlit app (local):**
+
+1. Make sure `models/final_model.pkl` exists (from the notebook run above)
+2. From the project root, run:
+   ```bash
+   streamlit run app.py
+   ```
+3. Open the local URL Streamlit prints (typically `http://localhost:8501`), fill in
+   the sidebar, and click **Predict trial outcome**
 
 ## Repository Structure
 ```
@@ -242,11 +297,13 @@ clinical-trial-success-prediction/
 ├── notebooks/
 │   └── Clinical_Trial_Success_Prediction.ipynb
 ├── screenshots/
-│   └── (README figures — pipeline diagram, EDA charts, model evaluation, SHAP outputs)
+│   └── (README figures — pipeline diagram, EDA charts, model evaluation,
+│        SHAP outputs, Streamlit app screenshot)
 ├── models/
 │   └── final_model.pkl          # saved fitted pipeline (preprocessing + tuned classifier)
+├── app.py                       # Streamlit app — loads models/final_model.pkl
 ├── README.md
-├── requirements.txt
+├── requirements.txt              # now includes streamlit
 └── .gitignore
 ```
 ## Future Improvements
@@ -259,10 +316,11 @@ clinical-trial-success-prediction/
   data accumulates
 - Formal SMOTE vs. class-weighting comparison via cross-validation (deferred per
   the project's original phased plan)
+- Batch-scoring mode in the Streamlit app (upload a CSV of trials instead of one at a
+  time)
 
 ## Author
 
 **Rajveer Singh**
 
 GitHub: [@singhrajveervns-gif](https://github.com/singhrajveervns-gif)
-
