@@ -226,7 +226,7 @@ hypothetical trial without opening the notebook.
 **🔗 [Try it live](https://clinicaltrialsuccessprediction-yrvyzr9jt7dsaefrhmubja.streamlit.app)**
 
 <p align="center">
-  <img src="screenshots/21_streamlit_app.png" width="850" loading="lazy">
+  <img src="screenshots/clinical_trial_streamlit_app.png" width="850" loading="lazy">
 </p>
 <p align="center"><em>Interactive predictor: sidebar inputs on the left, predicted success probability, risk tier, and a local SHAP explanation on the right.</em></p>
 
