@@ -318,6 +318,7 @@ clinical-trial-success-prediction/
   the project's original phased plan)
 - Batch-scoring mode in the Streamlit app (upload a CSV of trials instead of one at a
   time)
+- Replace RandomizedSearchCV with Optuna for more efficient hyperparameter optimization and potentially improved model performance.  
 
 ## Author
 
